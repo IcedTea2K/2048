@@ -3,7 +3,7 @@ import pygame as pg
 
 def main():
     pg.init()
-    size = width, height = 300, 300
+    size = width, height = 500, 800
     screen = pg.display.set_mode(size)
     black = 255,255,255
     while True:
