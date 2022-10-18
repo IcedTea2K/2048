@@ -3,15 +3,15 @@ import pygame as pg
 
 def main():
     pg.init()
-    size = width, height = 500, 800
-    screen = pg.display.set_mode(size)
-    black = 255,255,255
+    SIZE = width, height = 500, 800
+    SCREEN = pg.display.set_mode(SIZE)
+    BGCOLOR = 250,248,239
     while True:
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 sys.exit()
         
-        screen.fill(black) # reset screen
+        SCREEN.fill(BGCOLOR) # reset screen
         pg.display.flip()
 
 
