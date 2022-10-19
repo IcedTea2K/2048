@@ -17,9 +17,10 @@ def main():
 
     CELL_SIZE = 106, 106
     CELL_COLOR = 238,228,218,0.35
-    PADDING = (GRID_SIZE[0] - CELL_SIZE[0])/5
-    CELL_RECTS = [[pg.Rect((x*CELL_SIZE[0] + PADDING, y*CELL_SIZE[0] + PADDING), CELL_SIZE) for y in range(0,4)] for x in range(0,4)]
-     
+    PADDING = (GRID_SIZE[0] - CELL_SIZE[0]*4)/5
+    CELL_RECTS = [[pg.Rect((x*CELL_SIZE[0] + PADDING*(x+1) + GRID_RECT.topleft[0], y*CELL_SIZE[1] + PADDING*(y+1) + GRID_RECT.topleft[1]), CELL_SIZE) \
+        for y in range(0,4)] for x in range(0,4)]
+
     while True:
         for event in pg.event.get():
             if event.type == pg.QUIT:
