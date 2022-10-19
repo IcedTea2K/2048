@@ -1,5 +1,6 @@
 from ctypes.wintypes import RGB
 import sys
+from tkinter.tix import CELL
 from turtle import Screen, color
 import pygame as pg
 
@@ -16,10 +17,12 @@ def main():
     GRID_RECT.center = GRID_POS
 
     CELL_SIZE = 106, 106
-    CELL_COLOR = 238,228,218,0.35
+    CELL_COLOR = 238,228,218,100
     PADDING = (GRID_SIZE[0] - CELL_SIZE[0]*4)/5
     CELL_RECTS = [[pg.Rect((x*CELL_SIZE[0] + PADDING*(x+1) + GRID_RECT.topleft[0], y*CELL_SIZE[1] + PADDING*(y+1) + GRID_RECT.topleft[1]), CELL_SIZE) \
         for y in range(0,4)] for x in range(0,4)]
+    CELL_SURFACE = pg.Surface(CELL_SIZE, pg.SRCALPHA) 
+    CELL_SURFACE.fill(CELL_COLOR) # set color of the cell
 
     while True:
         for event in pg.event.get():
@@ -28,13 +31,13 @@ def main():
         
         SCREEN.fill(BGCOLOR) # reset screen
         pg.draw.rect(SCREEN, GRID_BGCOLOR, GRID_RECT)
-        drawCells(SCREEN, CELL_COLOR, CELL_RECTS)
+        drawCells(SCREEN, CELL_SURFACE, CELL_RECTS)
         pg.display.flip()
 
-def drawCells(screen:pg.Surface, color:tuple, rects: list[list[pg.Rect]]) -> None:
+def drawCells(screen:pg.Surface, surface:pg.Surface, rects: list[list[pg.Rect]]) -> None:
     for x in rects:
         for y in x:
-            pg.draw.rect(screen, color, y)
+            screen.blit(surface, y)
 
 if __name__ == '__main__':
     main()
