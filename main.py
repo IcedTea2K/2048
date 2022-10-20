@@ -1,6 +1,4 @@
-from ctypes.wintypes import RGB
 import sys
-from tkinter.tix import CELL
 from turtle import Screen, color
 import pygame as pg
 
