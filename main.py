@@ -28,8 +28,8 @@ def main():
                 sys.exit()
         
         SCREEN.fill(BGCOLOR) # reset screen
-        pg.draw.rect(SCREEN, GRID_BGCOLOR, GRID_RECT)
-        drawCells(SCREEN, CELL_SURFACE, CELL_RECTS)
+        pg.draw.rect(SCREEN, GRID_BGCOLOR, GRID_RECT) # draw grid background
+        drawCells(SCREEN, CELL_SURFACE, CELL_RECTS) # draw each cells of grid
         pg.display.flip()
 
 def drawCells(screen:pg.Surface, surface:pg.Surface, rects: list[list[pg.Rect]]) -> None:
