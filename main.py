@@ -33,6 +33,7 @@ def main():
         pg.display.flip()
 
 def drawCells(screen:pg.Surface, surface:pg.Surface, rects: list[list[pg.Rect]]) -> None:
+    """Draw the (background) cells of the grid"""
     for x in rects:
         for y in x:
             screen.blit(surface, y)
