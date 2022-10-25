@@ -32,6 +32,18 @@ def main():
         drawCells(SCREEN, CELL_SURFACE, CELL_RECTS) # draw each cells of grid
         pg.display.flip()
 
+def moveSquare():
+    pass
+
+def combineSquare():
+    pass
+
+def spawnSquare():
+    pass
+
+def renderSquare():
+    pass 
+
 def drawCells(screen:pg.Surface, surface:pg.Surface, rects: list[list[pg.Rect]]) -> None:
     """Draw the (background) cells of the grid"""
     for x in rects:
