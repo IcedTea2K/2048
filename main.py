@@ -22,6 +22,8 @@ def main():
     CELL_SURFACE = pg.Surface(CELL_SIZE, pg.SRCALPHA) 
     CELL_SURFACE.fill(CELL_COLOR) # set color of the cell
 
+    allSquares = [] # list of all the squares in the game
+
     while True:
         for event in pg.event.get():
             if event.type == pg.QUIT:
