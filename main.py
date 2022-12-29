@@ -37,7 +37,15 @@ def main():
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 sys.exit()
-        
+            elif event.type == pg.KEYUP:
+                if event.key == pg.K_UP:
+                    allSquares[0].moveSquare((0,-SQUARE_SPEED))
+                elif event.key == pg.K_RIGHT:
+                    allSquares[0].moveSquare((SQUARE_SPEED, 0)) 
+                elif event.key == pg.K_LEFT:
+                    allSquares[0].moveSquare((-SQUARE_SPEED, 0)) 
+                elif event.key == pg.K_DOWN:
+                    allSquares[0].moveSquare((0, SQUARE_SPEED))  
         SCREEN.fill(BGCOLOR) # reset screen
         pg.draw.rect(SCREEN, GRID_BGCOLOR, GRID_RECT) # draw grid background
         drawCells(CELL_SURFACE, CELL_RECTS) # draw each cells of grid
