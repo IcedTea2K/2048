@@ -9,6 +9,9 @@ class  Square:
         self.num = num
         self.idx = idx
         self.rect = rect
+
+        self.lastMovement = (0,0)
+        self.isMoving = False
     
     def setNum(self, num: int) -> None:
         """Set a value to the square"""
@@ -18,8 +21,13 @@ class  Square:
         """Set the square to a new index in the list"""
         self.idx = idx
 
-    def moveSquare(self, dist: tuple[int, int]) -> None:
-        self.rect = self.rect.move(dist)
+    def moveSquare(self, dist=None) -> None:
+        if dist is None:
+            self.rect = self.rect.move(self.lastMovement)
+        else:
+            self.rect = self.rect.move(dist)
+            self.lastMovement = dist
+            self.isMoving = True
 
     def getNum(self) -> int:
         """Get the number of square"""

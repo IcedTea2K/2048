@@ -52,8 +52,9 @@ def main():
         renderSquare(writer, allSquares)
         pg.display.flip()
 
-def moveSquare():
-    pass
+def moveSquares(squares: list[Square]) -> None:
+    for s in squares:
+        s.moveSquare()
 
 def combineSquare():
     pass
@@ -65,6 +66,8 @@ def renderSquare(writer: pg.font, los: list[Square]):
     for s in los:
         textSurf = writer.render('2', True, SQUARE_TXT_COLOR)
         textRect = textSurf.get_rect(center = s.getRect().center)
+        moveSquares(los)
+
         SCREEN.blit(SQUARE_SURFACE, s.getRect())
         SCREEN.blit(textSurf, textRect)
         # print('aa')
