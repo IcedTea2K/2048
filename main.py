@@ -19,6 +19,8 @@ CELL_RECTS = [[pg.Rect((x*CELL_SIZE[0] + PADDING*(x+1) + GRID_RECT.topleft[0], y
 CELL_SURFACE = pg.Surface(CELL_SIZE, pg.SRCALPHA) 
 CELL_SURFACE.fill(CELL_COLOR) # set color of the cell
 
+SQUARE_SPEED = 3
+
 def main():
     pg.init()
     allSquares = [] # list of all the squares in the game
