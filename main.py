@@ -1,5 +1,6 @@
 import sys
 import pygame as pg
+from Square import *
 
 SIZE = WIDTH, HEIGHT = 550, 800
 SCREEN = pg.display.set_mode(SIZE)
@@ -20,10 +21,14 @@ CELL_SURFACE = pg.Surface(CELL_SIZE, pg.SRCALPHA)
 CELL_SURFACE.fill(CELL_COLOR) # set color of the cell
 
 SQUARE_SPEED = 3
+SQUARE_TXT_SIZE = 80
+SQUARE_TXT_COLOR = 119, 110, 101
 
 def main():
     pg.init()
-    allSquares = [] # list of all the squares in the game
+    pg.font.init()
+    writer = pg.font.Font(None, SQUARE_TXT_SIZE)
+    allSquares = [Square((0,0), 2, True)] # list of all the squares in the game
 
     while True:
         for event in pg.event.get():
@@ -32,7 +37,8 @@ def main():
         
         SCREEN.fill(BGCOLOR) # reset screen
         pg.draw.rect(SCREEN, GRID_BGCOLOR, GRID_RECT) # draw grid background
-        drawCells(SCREEN, CELL_SURFACE, CELL_RECTS) # draw each cells of grid
+        drawCells(CELL_SURFACE, CELL_RECTS) # draw each cells of grid
+        renderSquare(writer, allSquares)
         pg.display.flip()
 
 def moveSquare():
@@ -44,14 +50,17 @@ def combineSquare():
 def spawnSquare():
     pass
 
-def renderSquare():
-    pass 
+def renderSquare(writer: pg.font, los: list[Square]):
+    for s in los:
+        SCREEN.blit(writer.render('2', True, SQUARE_TXT_COLOR), CELL_RECTS[0][0].center)
+        # print('aa')
+         
 
-def drawCells(screen:pg.Surface, surface:pg.Surface, rects: list[list[pg.Rect]]) -> None:
+def drawCells(surface:pg.Surface, rects: list[list[pg.Rect]]) -> None:
     """Draw the (background) cells of the grid"""
     for x in rects:
         for y in x:
-            screen.blit(surface, y)
+            SCREEN.blit(surface, y)
 
 if __name__ == '__main__':
     main()

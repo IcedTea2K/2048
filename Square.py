@@ -1,5 +1,5 @@
 class  Square:
-    def __init__(self, num, idx) -> None:
+    def __init__(self, idx: tuple[int, int], num=None, isActive=False) -> None:
         """Create a square with specified attributes
         num -- the number it currently holds
         idx -- tuple of its indices in the list
