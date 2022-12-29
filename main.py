@@ -31,7 +31,7 @@ def main():
     pg.init()
     pg.font.init()
     writer = pg.font.Font(None, SQUARE_TXT_SIZE)
-    allSquares = [Square(2, (0,0), CELL_RECTS[0][0])] # list of all the squares in the game
+    allSquares = [Square(2, (0,0), CELL_RECTS[0][0].inflate(PADDING, PADDING))] # list of all the squares in the game
     
     while True:
         for event in pg.event.get():
@@ -60,7 +60,6 @@ def moveSquares(squares: list[Square]) -> None:
             s.isMoving = False
         elif s.isMoving:
             s.moveSquare()
-        print(s.getRect().collidelist(squares)) 
 
 def combineSquare():
     pass
