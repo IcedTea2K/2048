@@ -1,5 +1,4 @@
 import sys
-from turtle import Screen, color
 import pygame as pg
 
 def main():
