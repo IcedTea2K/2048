@@ -53,8 +53,14 @@ def main():
         pg.display.flip()
 
 def moveSquares(squares: list[Square]) -> None:
-    for s in squares:
-        s.moveSquare()
+    for i in range(0, len(squares)):
+        s = squares[i]
+        if s.getRect().collidelist(squares[i+1:]) != -1 or \
+            not GRID_RECT.contains(s.getRect()):
+            s.isMoving = False
+        elif s.isMoving:
+            s.moveSquare()
+        print(s.getRect().collidelist(squares)) 
 
 def combineSquare():
     pass
