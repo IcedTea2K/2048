@@ -1,5 +1,5 @@
 class  Square:
-    def __init__(self, idx: tuple[int, int], pos: tuple[int, int], num=None) -> None:
+    def __init__(self,num: int, idx: tuple[int, int], pos: tuple[int, int]) -> None:
         """Create a square with specified attributes
         num -- the number it currently holds
         idx -- tuple of its indices in the list
@@ -17,6 +17,9 @@ class  Square:
         """Set the square to a new index in the list"""
         self.idx = idx
 
+    def setPos(self, newPos: tuple[int, int]) -> None:
+        self.pos = newPos
+
     def getNum(self) -> int:
         """Get the number of square"""
         return self.num
@@ -24,3 +27,7 @@ class  Square:
     def getIdx(self) -> tuple[int, int]:
         """Get the indices of the square in the list"""
         return self.idx
+
+    def getPos(self) -> tuple[int, int]:
+        """get the position of the square on screen""" 
+        return self.pos
