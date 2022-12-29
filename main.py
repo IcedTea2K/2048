@@ -29,7 +29,7 @@ def main():
     pg.font.init()
     writer = pg.font.Font(None, SQUARE_TXT_SIZE)
     allSquares = [Square((0,0), 2, True)] # list of all the squares in the game
-
+    
     while True:
         for event in pg.event.get():
             if event.type == pg.QUIT:
@@ -52,7 +52,9 @@ def spawnSquare():
 
 def renderSquare(writer: pg.font, los: list[Square]):
     for s in los:
-        SCREEN.blit(writer.render('2', True, SQUARE_TXT_COLOR), CELL_RECTS[0][0].center)
+        textSurf = writer.render('2', True, SQUARE_TXT_COLOR)
+        textRect = textSurf.get_rect(center = CELL_RECTS[0][0].center)
+        SCREEN.blit(textSurf, textRect)
         # print('aa')
          
 
