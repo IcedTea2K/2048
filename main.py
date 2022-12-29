@@ -21,6 +21,9 @@ CELL_SURFACE = pg.Surface(CELL_SIZE, pg.SRCALPHA)
 CELL_SURFACE.fill(CELL_COLOR) # set color of the cell
 
 SQUARE_SPEED = 3
+SQUARE_COLOR = 238, 228, 218
+SQUARE_SURFACE = pg.Surface(CELL_SIZE)
+SQUARE_SURFACE.fill(SQUARE_COLOR)
 SQUARE_TXT_SIZE = 80
 SQUARE_TXT_COLOR = 119, 110, 101
 
@@ -28,7 +31,7 @@ def main():
     pg.init()
     pg.font.init()
     writer = pg.font.Font(None, SQUARE_TXT_SIZE)
-    allSquares = [Square((0,0), 2, True)] # list of all the squares in the game
+    allSquares = [Square(2, (0,0), CELL_RECTS[0][0])] # list of all the squares in the game
     
     while True:
         for event in pg.event.get():
@@ -53,7 +56,8 @@ def spawnSquare():
 def renderSquare(writer: pg.font, los: list[Square]):
     for s in los:
         textSurf = writer.render('2', True, SQUARE_TXT_COLOR)
-        textRect = textSurf.get_rect(center = CELL_RECTS[0][0].center)
+        textRect = textSurf.get_rect(center = s.getRect().center)
+        SCREEN.blit(SQUARE_SURFACE, s.getRect())
         SCREEN.blit(textSurf, textRect)
         # print('aa')
          

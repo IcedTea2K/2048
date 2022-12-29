@@ -1,13 +1,14 @@
+import pygame as pg
 class  Square:
-    def __init__(self,num: int, idx: tuple[int, int], pos: tuple[int, int]) -> None:
+    def __init__(self,num: int, idx: tuple[int, int], rect: pg.rect.Rect) -> None:
         """Create a square with specified attributes
         num -- the number it currently holds
         idx -- tuple of its indices in the list
-        pos -- position of the square
+        rect -- position (and size) of the square
         """
         self.num = num
         self.idx = idx
-        self.pos = pos
+        self.rect = rect
     
     def setNum(self, num: int) -> None:
         """Set a value to the square"""
@@ -17,8 +18,8 @@ class  Square:
         """Set the square to a new index in the list"""
         self.idx = idx
 
-    def setPos(self, newPos: tuple[int, int]) -> None:
-        self.pos = newPos
+    def moveSquare(self, dist: tuple[int, int]) -> None:
+        self.rect = self.rect.move(dist)
 
     def getNum(self) -> int:
         """Get the number of square"""
@@ -28,6 +29,6 @@ class  Square:
         """Get the indices of the square in the list"""
         return self.idx
 
-    def getPos(self) -> tuple[int, int]:
+    def getRect(self) -> pg.rect.Rect:
         """get the position of the square on screen""" 
-        return self.pos
+        return self.rect
