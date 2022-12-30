@@ -12,6 +12,9 @@ class  Square:
 
         self.lastDir = (0,0)
     
+    def double(self) -> None:
+        self.num *= 2
+
     def setNum(self, num: int) -> None:
         """Set a value to the square"""
         self.num = num

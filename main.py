@@ -31,7 +31,7 @@ def main():
     pg.init()
     pg.font.init()
     writer = pg.font.Font(None, SQUARE_TXT_SIZE)
-    allSquares = [Square(2, (0,0), CELL_RECTS[0][0]), Square(8, (1,0), CELL_RECTS[0][1]),\
+    allSquares = [Square(2, (0,0), CELL_RECTS[0][0]), Square(16, (1,0), CELL_RECTS[0][1]),\
         Square(4, (0,1), CELL_RECTS[1][0]), Square(16, (1,1), CELL_RECTS[1][1])] # list of all the squares in the game
     occupiedCells = {(0,0): allSquares[0], (1,0): allSquares[1],\
         (0,1): allSquares[2], (1,1):allSquares[3]}
@@ -77,6 +77,7 @@ def moveSquares(squares: list[Square], dir:tuple[int, int], occupied: dict[tuple
                     currX += dir[0]
                     currY += dir[1]
                 else:
+                    combineSquare(s, occupied.get((currX + dir[0], currY + dir[1])))
                     break
             del occupied[s.getIdx()]
             occupied[(currX, currY)] = s
@@ -84,13 +85,14 @@ def moveSquares(squares: list[Square], dir:tuple[int, int], occupied: dict[tuple
             s.rect = CELL_RECTS[currY][currX]
             print(occupied)
 
-def combineSquare():
-    pass
+def combineSquare(squareOne: Square, squareTwo: Square) -> None:
+    if squareOne.getNum() == squareTwo.getNum():
+        squareTwo.double()
 
 def spawnSquare():
     pass
 
-def renderSquare(writer: pg.font, los: list[Square]):
+def renderSquare(writer: pg.font, los: list[Square]) -> None:
     for s in los:
         textSurf = writer.render(str(s.getNum()), True, SQUARE_TXT_COLOR)
         textRect = textSurf.get_rect(center=s.rect.center)
