@@ -16,7 +16,7 @@ CELL_SIZE = 106, 106
 CELL_COLOR = 238,228,218,100
 PADDING = (GRID_SIZE[0] - CELL_SIZE[0]*4)/5
 CELL_RECTS = [[pg.Rect((x*CELL_SIZE[0] + PADDING*(x+1) + GRID_RECT.topleft[0], y*CELL_SIZE[1] + PADDING*(y+1) + GRID_RECT.topleft[1]), CELL_SIZE) \
-    for y in range(0,4)] for x in range(0,4)]
+    for x in range(0,4)] for y in range(0,4)]
 CELL_SURFACE = pg.Surface(CELL_SIZE, pg.SRCALPHA) 
 CELL_SURFACE.fill(CELL_COLOR) # set color of the cell
 
@@ -32,6 +32,7 @@ def main():
     pg.font.init()
     writer = pg.font.Font(None, SQUARE_TXT_SIZE)
     allSquares = [Square(2, (0,0), CELL_RECTS[0][0])] # list of all the squares in the game
+    occupiedCells = {(0,0): allSquares[0]}
     
     while True:
         for event in pg.event.get():
@@ -39,30 +40,38 @@ def main():
                 sys.exit()
             elif event.type == pg.KEYUP:
                 if event.key == pg.K_UP:
-                    allSquares[0].moveSquare((0,-SQUARE_SPEED))
+                    moveSquares(allSquares, (0,-1), occupiedCells)
                 elif event.key == pg.K_RIGHT:
-                    allSquares[0].moveSquare((SQUARE_SPEED, 0)) 
+                    moveSquares(allSquares, (1, 0), occupiedCells)
                 elif event.key == pg.K_LEFT:
-                    allSquares[0].moveSquare((-SQUARE_SPEED, 0)) 
+                    moveSquares(allSquares, (-1, 0), occupiedCells)
                 elif event.key == pg.K_DOWN:
-                    allSquares[0].moveSquare((0, SQUARE_SPEED))  
+                    moveSquares(allSquares, (0, 1), occupiedCells)
         SCREEN.fill(BGCOLOR) # reset screen
         pg.draw.rect(SCREEN, GRID_BGCOLOR, GRID_RECT) # draw grid background
         drawCells(CELL_SURFACE, CELL_RECTS) # draw each cells of grid
         renderSquare(writer, allSquares)
         pg.display.flip()
 
-def moveSquares(squares: list[Square]) -> None:
+def moveSquares(squares: list[Square], dir: None or tuple[int, int], occupied: dict[tuple[int, int]: Square]) -> None:
+    print(dir)
     for i in range(0, len(squares)):
         s = squares[i]
-        collisionIdx = s.rect.collidelist(squares[i+1:])
-        if collisionIdx != -1:
-            s.rect.center = squares[collisionIdx].rect.center
-            s.isMoving = False
-        elif not GRID_RECT.contains(s.rect):
-            s.isMoving = False
-        elif s.isMoving:
-            s.moveSquare()
+        currX = s.getIdx()[0]
+        currY = s.getIdx()[1] 
+        while currX + dir[0] < 4 and currY + dir[1] < 4 and\
+            currX + dir[0] >= 0 and currY + dir[1] >= 0:
+            if occupied.get((currX + dir[0], currY + dir[1])) is None:
+                currX += dir[0]
+                currY += dir[1]
+            else:
+                # Still need to implement combining squares
+                break
+        del occupied[s.getIdx()]
+        occupied[(currX, currY)] = s
+        s.setIdx((currX, currY))
+        s.rect = CELL_RECTS[currY][currX]
+        print(occupied)
 
 def combineSquare():
     pass
@@ -72,7 +81,6 @@ def spawnSquare():
 
 def renderSquare(writer: pg.font, los: list[Square]):
     for s in los:
-        moveSquares(los)
         textSurf = writer.render('2', True, SQUARE_TXT_COLOR)
         textRect = textSurf.get_rect(center=s.rect.center)
 
