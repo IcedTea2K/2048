@@ -20,7 +20,7 @@ CELL_RECTS = [[pg.Rect((x*CELL_SIZE[0] + PADDING*(x+1) + GRID_RECT.topleft[0], y
 CELL_SURFACE = pg.Surface(CELL_SIZE, pg.SRCALPHA) 
 CELL_SURFACE.fill(CELL_COLOR) # set color of the cell
 
-SQUARE_SPEED = 3
+SQUARE_SPEED = 6
 SQUARE_COLOR = 238, 228, 218
 SQUARE_SURFACE = pg.Surface(CELL_SIZE)
 SQUARE_SURFACE.fill(SQUARE_COLOR)
@@ -55,8 +55,11 @@ def main():
 def moveSquares(squares: list[Square]) -> None:
     for i in range(0, len(squares)):
         s = squares[i]
-        if s.getRect().collidelist(squares[i+1:]) != -1 or \
-            not GRID_RECT.contains(s.getRect()):
+        collisionIdx = s.rect.collidelist(squares[i+1:])
+        if collisionIdx != -1:
+            s.rect.center = squares[collisionIdx].rect.center
+            s.isMoving = False
+        elif not GRID_RECT.contains(s.rect):
             s.isMoving = False
         elif s.isMoving:
             s.moveSquare()
@@ -71,9 +74,9 @@ def renderSquare(writer: pg.font, los: list[Square]):
     for s in los:
         moveSquares(los)
         textSurf = writer.render('2', True, SQUARE_TXT_COLOR)
-        textRect = textSurf.get_rect(center=s.getRect().center)
+        textRect = textSurf.get_rect(center=s.rect.center)
 
-        SCREEN.blit(SQUARE_SURFACE, s.getRect())
+        SCREEN.blit(SQUARE_SURFACE, s.rect)
         SCREEN.blit(textSurf, textRect)
         # print('aa')
          

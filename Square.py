@@ -36,7 +36,3 @@ class  Square:
     def getIdx(self) -> tuple[int, int]:
         """Get the indices of the square in the list"""
         return self.idx
-
-    def getRect(self) -> pg.rect.Rect:
-        """get the position of the square on screen""" 
-        return self.rect
