@@ -29,7 +29,7 @@ SQUARE_COLOR = {2: (234, 228, 220), 4: (234, 226, 210),\
                 4096: (61, 59, 53), 8192: (59, 58, 52)}
 SQUARE_SURFACE = pg.Surface(CELL_SIZE)
 SQUARE_TXT_SIZE_SMALL_NUM = 80
-SQUARE_TXT_SIZE_LARGE_NUM = 60
+SQUARE_TXT_SIZE_LARGE_NUM = 50
 SQUARE_TXT_COLOR_SMALL_NUM = (119, 110, 101)
 SQUARE_TXT_COLOR_LARGE_NUM = (255, 255, 255)
 
@@ -38,7 +38,7 @@ def main():
     pg.font.init()
     smallWriter = pg.font.Font(None, SQUARE_TXT_SIZE_SMALL_NUM)
     largeWrite = pg.font.Font(None, SQUARE_TXT_SIZE_LARGE_NUM)
-    # allSquares = [Square(4, (0,0), CELL_RECTS[0][0]), Square(4, (1,0), CELL_RECTS[0][1]),\
+    # allSquares = [Square(2048, (0,0), CELL_RECTS[0][0]), Square(4, (1,0), CELL_RECTS[0][1]),\
     #     Square(4, (0,1), CELL_RECTS[1][0]), Square(4, (1,1), CELL_RECTS[1][1]), Square(4, (2,0), CELL_RECTS[0][2])] # list of all the squares in the game
     # occupiedCells = {(0,0): allSquares[0], (1,0): allSquares[1],\
     #     (0,1): allSquares[2], (1,1):allSquares[3], (2,0):allSquares[4]}
