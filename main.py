@@ -105,7 +105,7 @@ def spawnSquare(squares: list[Square], occupied: dict[tuple[int, int]: Square]) 
     if len(potential) == 0:
         return
     idx = random.choice(potential)
-    squares.append(Square(random.choice([2,4]), idx, CELL_RECTS[idx[1]][idx[0]]))
+    squares.append(Square(random.choice([2,2,2,2,2,2,4]), idx, CELL_RECTS[idx[1]][idx[0]]))
     occupied[idx] = squares[-1]
 
 def renderSquare(writer: pg.font, los: list[Square]) -> None:
