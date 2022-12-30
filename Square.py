@@ -11,6 +11,7 @@ class  Square:
         self.rect = rect
 
         self.lastDir = (0,0)
+        self.status = True
     
     def double(self) -> None:
         self.num *= 2
@@ -30,3 +31,9 @@ class  Square:
     def getIdx(self) -> tuple[int, int]:
         """Get the indices of the square in the list"""
         return self.idx
+    
+    def disable(self) -> None:
+        self.status = False
+    
+    def getStatus(self) -> bool:
+        return self.status

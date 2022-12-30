@@ -88,6 +88,7 @@ def moveSquares(squares: list[Square], dir:tuple[int, int], occupied: dict[tuple
 def combineSquare(squareOne: Square, squareTwo: Square) -> None:
     if squareOne.getNum() == squareTwo.getNum():
         squareTwo.double()
+        squareOne.disable()
 
 def spawnSquare():
     pass
