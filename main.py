@@ -68,7 +68,6 @@ def moveSquares(squares: list[Square], dir:tuple[int, int], occupied: dict[tuple
 
     for c in container:
         for s in c:
-            # s = squares[i]
             currX = s.getIdx()[0]
             currY = s.getIdx()[1] 
             while currX + dir[0] < 4 and currY + dir[1] < 4 and\
@@ -85,7 +84,6 @@ def moveSquares(squares: list[Square], dir:tuple[int, int], occupied: dict[tuple
                 s.setIdx((currX, currY))
                 s.rect = CELL_RECTS[currY][currX]
             else:
-                c.remove(s)
                 squares.remove(s)
             print(occupied)
 
