@@ -22,16 +22,22 @@ CELL_SURFACE = pg.Surface(CELL_SIZE, pg.SRCALPHA)
 CELL_SURFACE.fill(CELL_COLOR) # set color of the cell
 
 SQUARE_SPEED = 6
-SQUARE_COLOR = 238, 228, 218
+SQUARE_COLOR = {2: (234, 228, 220), 4: (234, 226, 210),\
+    8: (225, 182, 139), 16: (222, 158, 122), 32: (218, 137, 115),\
+        64: (214, 114, 89), 128:(231, 215, 159), 256: (229, 213, 150),\
+            512: (235, 214, 127), 1024: (228, 208, 132), 2048: (224, 198, 90),\
+                4096: (61, 59, 53), 8192: (59, 58, 52)}
 SQUARE_SURFACE = pg.Surface(CELL_SIZE)
-SQUARE_SURFACE.fill(SQUARE_COLOR)
-SQUARE_TXT_SIZE = 80
-SQUARE_TXT_COLOR = 119, 110, 101
+SQUARE_TXT_SIZE_SMALL_NUM = 80
+SQUARE_TXT_SIZE_LARGE_NUM = 60
+SQUARE_TXT_COLOR_SMALL_NUM = (119, 110, 101)
+SQUARE_TXT_COLOR_LARGE_NUM = (255, 255, 255)
 
 def main():
     pg.init()
     pg.font.init()
-    writer = pg.font.Font(None, SQUARE_TXT_SIZE)
+    smallWriter = pg.font.Font(None, SQUARE_TXT_SIZE_SMALL_NUM)
+    largeWrite = pg.font.Font(None, SQUARE_TXT_SIZE_LARGE_NUM)
     # allSquares = [Square(4, (0,0), CELL_RECTS[0][0]), Square(4, (1,0), CELL_RECTS[0][1]),\
     #     Square(4, (0,1), CELL_RECTS[1][0]), Square(4, (1,1), CELL_RECTS[1][1]), Square(4, (2,0), CELL_RECTS[0][2])] # list of all the squares in the game
     # occupiedCells = {(0,0): allSquares[0], (1,0): allSquares[1],\
@@ -56,7 +62,7 @@ def main():
         SCREEN.fill(BGCOLOR) # reset screen
         pg.draw.rect(SCREEN, GRID_BGCOLOR, GRID_RECT) # draw grid background
         drawCells(CELL_SURFACE, CELL_RECTS) # draw each cells of grid
-        renderSquare(writer, allSquares)
+        renderSquare(smallWriter, largeWrite, allSquares)
         pg.display.flip()
 
 def moveSquares(squares: list[Square], dir:tuple[int, int], occupied: dict[tuple[int, int]: Square]) -> None:
@@ -108,11 +114,19 @@ def spawnSquare(squares: list[Square], occupied: dict[tuple[int, int]: Square]) 
     squares.append(Square(random.choice([2,2,2,2,2,2,4]), idx, CELL_RECTS[idx[1]][idx[0]]))
     occupied[idx] = squares[-1]
 
-def renderSquare(writer: pg.font, los: list[Square]) -> None:
+def renderSquare(smallWriter: pg.font, largeWriter: pg.font, los: list[Square]) -> None:
     for s in los:
-        textSurf = writer.render(str(s.getNum()), True, SQUARE_TXT_COLOR)
-        textRect = textSurf.get_rect(center=s.rect.center)
+        squareVal = s.getNum()
+        textSurf = None
+        if squareVal <= 4:
+            textSurf = smallWriter.render(str(squareVal), True, SQUARE_TXT_COLOR_SMALL_NUM)
+        elif squareVal < 1000:
+            textSurf = smallWriter.render(str(squareVal), True, SQUARE_TXT_COLOR_LARGE_NUM)
+        else:
+            textSurf = largeWriter.render(str(squareVal), True, SQUARE_TXT_COLOR_LARGE_NUM)
 
+        textRect = textSurf.get_rect(center=s.rect.center)
+        SQUARE_SURFACE.fill(SQUARE_COLOR.get(squareVal))
         SCREEN.blit(SQUARE_SURFACE, s.rect)
         SCREEN.blit(textSurf, textRect)
         # print('aa')
