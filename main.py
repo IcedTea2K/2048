@@ -31,8 +31,8 @@ def main():
     pg.init()
     pg.font.init()
     writer = pg.font.Font(None, SQUARE_TXT_SIZE)
-    allSquares = [Square(2, (0,0), CELL_RECTS[0][0])] # list of all the squares in the game
-    occupiedCells = {(0,0): allSquares[0]}
+    allSquares = [Square(2, (0,0), CELL_RECTS[0][0]), Square(8, (1,0), CELL_RECTS[0][1])] # list of all the squares in the game
+    occupiedCells = {(0,0): allSquares[0], (1,0): allSquares[1]}
     
     while True:
         for event in pg.event.get():
@@ -53,25 +53,34 @@ def main():
         renderSquare(writer, allSquares)
         pg.display.flip()
 
-def moveSquares(squares: list[Square], dir: None or tuple[int, int], occupied: dict[tuple[int, int]: Square]) -> None:
-    print(dir)
-    for i in range(0, len(squares)):
-        s = squares[i]
-        currX = s.getIdx()[0]
-        currY = s.getIdx()[1] 
-        while currX + dir[0] < 4 and currY + dir[1] < 4 and\
-            currX + dir[0] >= 0 and currY + dir[1] >= 0:
-            if occupied.get((currX + dir[0], currY + dir[1])) is None:
-                currX += dir[0]
-                currY += dir[1]
-            else:
-                # Still need to implement combining squares
-                break
-        del occupied[s.getIdx()]
-        occupied[(currX, currY)] = s
-        s.setIdx((currX, currY))
-        s.rect = CELL_RECTS[currY][currX]
-        print(occupied)
+def moveSquares(squares: list[Square], dir:tuple[int, int], occupied: dict[tuple[int, int]: Square]) -> None:
+    container = [[] for i in range(4)]
+    if dir == (1,0) or dir == (-1,0): # horizontally
+        for s in squares:
+            container[s.getIdx()[1]].append(s)
+        container = [sorted(c, key=lambda s: s.getIdx()[0] * -dir[0]) for c in container] # sort to see which one is at front
+    else: # moving vertically
+        for s in squares:
+            container[s.getIdx()[0]].append(s) 
+        container = [sorted(c, key=lambda s: s.getIdx()[1] * -dir[1]) for c in container]
+
+    for c in container:
+        for s in c:
+            # s = squares[i]
+            currX = s.getIdx()[0]
+            currY = s.getIdx()[1] 
+            while currX + dir[0] < 4 and currY + dir[1] < 4 and\
+                currX + dir[0] >= 0 and currY + dir[1] >= 0:
+                if occupied.get((currX + dir[0], currY + dir[1])) is None:
+                    currX += dir[0]
+                    currY += dir[1]
+                else:
+                    break
+            del occupied[s.getIdx()]
+            occupied[(currX, currY)] = s
+            s.setIdx((currX, currY))
+            s.rect = CELL_RECTS[currY][currX]
+            print(occupied)
 
 def combineSquare():
     pass
@@ -81,7 +90,7 @@ def spawnSquare():
 
 def renderSquare(writer: pg.font, los: list[Square]):
     for s in los:
-        textSurf = writer.render('2', True, SQUARE_TXT_COLOR)
+        textSurf = writer.render(str(s.getNum()), True, SQUARE_TXT_COLOR)
         textRect = textSurf.get_rect(center=s.rect.center)
 
         SCREEN.blit(SQUARE_SURFACE, s.rect)
