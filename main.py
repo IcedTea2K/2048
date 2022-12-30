@@ -1,5 +1,6 @@
 import sys
 import pygame as pg
+import random
 from Square import *
 
 SIZE = WIDTH, HEIGHT = 550, 800
@@ -31,11 +32,13 @@ def main():
     pg.init()
     pg.font.init()
     writer = pg.font.Font(None, SQUARE_TXT_SIZE)
-    allSquares = [Square(4, (0,0), CELL_RECTS[0][0]), Square(4, (1,0), CELL_RECTS[0][1]),\
-        Square(4, (0,1), CELL_RECTS[1][0]), Square(4, (1,1), CELL_RECTS[1][1]), Square(4, (2,0), CELL_RECTS[0][2])] # list of all the squares in the game
-    occupiedCells = {(0,0): allSquares[0], (1,0): allSquares[1],\
-        (0,1): allSquares[2], (1,1):allSquares[3], (2,0):allSquares[4]}
-    
+    # allSquares = [Square(4, (0,0), CELL_RECTS[0][0]), Square(4, (1,0), CELL_RECTS[0][1]),\
+    #     Square(4, (0,1), CELL_RECTS[1][0]), Square(4, (1,1), CELL_RECTS[1][1]), Square(4, (2,0), CELL_RECTS[0][2])] # list of all the squares in the game
+    # occupiedCells = {(0,0): allSquares[0], (1,0): allSquares[1],\
+    #     (0,1): allSquares[2], (1,1):allSquares[3], (2,0):allSquares[4]}
+    allSquares = []
+    occupiedCells = {}
+    spawnSquare(allSquares, occupiedCells) 
     while True:
         for event in pg.event.get():
             if event.type == pg.QUIT:
@@ -49,6 +52,7 @@ def main():
                     moveSquares(allSquares, (-1, 0), occupiedCells)
                 elif event.key == pg.K_DOWN:
                     moveSquares(allSquares, (0, 1), occupiedCells)
+                spawnSquare(allSquares, occupiedCells) 
         SCREEN.fill(BGCOLOR) # reset screen
         pg.draw.rect(SCREEN, GRID_BGCOLOR, GRID_RECT) # draw grid background
         drawCells(CELL_SURFACE, CELL_RECTS) # draw each cells of grid
@@ -92,8 +96,15 @@ def combineSquare(squareOne: Square, squareTwo: Square) -> None:
         squareTwo.double()
         squareOne.disable()
 
-def spawnSquare():
-    pass
+def spawnSquare(squares: list[Square], occupied: dict[tuple[int, int]: Square]) -> None:
+    potential = []
+    for y in range(4):
+        for x in range(4):
+            if occupied.get((x,y)) is None:
+                potential.append((x,y))
+    idx = random.choice(potential)
+    squares.append(Square(random.choice([2,4]), idx, CELL_RECTS[idx[1]][idx[0]]))
+    occupied[idx] = squares[-1]
 
 def renderSquare(writer: pg.font, los: list[Square]) -> None:
     for s in los:
