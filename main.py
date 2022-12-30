@@ -45,6 +45,7 @@ def main():
     allSquares = []
     occupiedCells = {}
     spawnSquare(allSquares, occupiedCells) 
+    spawnSquare(allSquares, occupiedCells)  
     while True:
         for event in pg.event.get():
             if event.type == pg.QUIT:
@@ -58,7 +59,6 @@ def main():
                     moveSquares(allSquares, (-1, 0), occupiedCells)
                 elif event.key == pg.K_DOWN:
                     moveSquares(allSquares, (0, 1), occupiedCells)
-                spawnSquare(allSquares, occupiedCells) 
         SCREEN.fill(BGCOLOR) # reset screen
         pg.draw.rect(SCREEN, GRID_BGCOLOR, GRID_RECT) # draw grid background
         drawCells(CELL_SURFACE, CELL_RECTS) # draw each cells of grid
@@ -75,7 +75,7 @@ def moveSquares(squares: list[Square], dir:tuple[int, int], occupied: dict[tuple
         for s in squares:
             container[s.getIdx()[0]].append(s) 
         container = [sorted(c, key=lambda s: s.getIdx()[1] * -dir[1]) for c in container]
-
+    hasMoved = False
     for c in container:
         for s in c:
             currX = s.getIdx()[0]
@@ -85,8 +85,9 @@ def moveSquares(squares: list[Square], dir:tuple[int, int], occupied: dict[tuple
                 if occupied.get((currX + dir[0], currY + dir[1])) is None:
                     currX += dir[0]
                     currY += dir[1]
+                    hasMoved = True
                 else:
-                    combineSquare(s, occupied.get((currX + dir[0], currY + dir[1])))
+                    hasMoved = combineSquare(s, occupied.get((currX + dir[0], currY + dir[1]))) or hasMoved
                     break
             del occupied[s.getIdx()]
             if s.getStatus():
@@ -96,11 +97,16 @@ def moveSquares(squares: list[Square], dir:tuple[int, int], occupied: dict[tuple
             else:
                 squares.remove(s)
             print(occupied)
+    if hasMoved:
+        spawnSquare(squares, occupied) 
 
-def combineSquare(squareOne: Square, squareTwo: Square) -> None:
+def combineSquare(squareOne: Square, squareTwo: Square) -> bool:
     if squareOne.getNum() == squareTwo.getNum():
         squareTwo.double()
         squareOne.disable()
+        print('aa')
+        return True
+    return False
 
 def spawnSquare(squares: list[Square], occupied: dict[tuple[int, int]: Square]) -> None:
     potential = []
