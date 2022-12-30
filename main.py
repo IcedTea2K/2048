@@ -102,6 +102,8 @@ def spawnSquare(squares: list[Square], occupied: dict[tuple[int, int]: Square]) 
         for x in range(4):
             if occupied.get((x,y)) is None:
                 potential.append((x,y))
+    if len(potential) == 0:
+        return
     idx = random.choice(potential)
     squares.append(Square(random.choice([2,4]), idx, CELL_RECTS[idx[1]][idx[0]]))
     occupied[idx] = squares[-1]
