@@ -31,10 +31,10 @@ def main():
     pg.init()
     pg.font.init()
     writer = pg.font.Font(None, SQUARE_TXT_SIZE)
-    allSquares = [Square(2, (0,0), CELL_RECTS[0][0]), Square(16, (1,0), CELL_RECTS[0][1]),\
-        Square(4, (0,1), CELL_RECTS[1][0]), Square(16, (1,1), CELL_RECTS[1][1])] # list of all the squares in the game
+    allSquares = [Square(4, (0,0), CELL_RECTS[0][0]), Square(4, (1,0), CELL_RECTS[0][1]),\
+        Square(4, (0,1), CELL_RECTS[1][0]), Square(4, (1,1), CELL_RECTS[1][1]), Square(4, (2,0), CELL_RECTS[0][2])] # list of all the squares in the game
     occupiedCells = {(0,0): allSquares[0], (1,0): allSquares[1],\
-        (0,1): allSquares[2], (1,1):allSquares[3]}
+        (0,1): allSquares[2], (1,1):allSquares[3], (2,0):allSquares[4]}
     
     while True:
         for event in pg.event.get():
@@ -80,9 +80,13 @@ def moveSquares(squares: list[Square], dir:tuple[int, int], occupied: dict[tuple
                     combineSquare(s, occupied.get((currX + dir[0], currY + dir[1])))
                     break
             del occupied[s.getIdx()]
-            occupied[(currX, currY)] = s
-            s.setIdx((currX, currY))
-            s.rect = CELL_RECTS[currY][currX]
+            if s.getStatus():
+                occupied[(currX, currY)] = s
+                s.setIdx((currX, currY))
+                s.rect = CELL_RECTS[currY][currX]
+            else:
+                c.remove(s)
+                squares.remove(s)
             print(occupied)
 
 def combineSquare(squareOne: Square, squareTwo: Square) -> None:
