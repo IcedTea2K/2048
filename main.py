@@ -47,6 +47,7 @@ def main():
     spawnSquare(allSquares, occupiedCells) 
     spawnSquare(allSquares, occupiedCells)  
     while True:
+        frameCount = int(((pg.time.get_ticks() / 1000) * 60)%60)
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 sys.exit()
