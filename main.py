@@ -63,7 +63,7 @@ def main():
         SCREEN.fill(BGCOLOR) # reset screen
         pg.draw.rect(SCREEN, GRID_BGCOLOR, GRID_RECT) # draw grid background
         drawCells(CELL_SURFACE, CELL_RECTS) # draw each cells of grid
-        renderSquare(smallWriter, largeWrite, allSquares)
+        renderSquare(smallWriter, largeWrite, allSquares, frameCount)
         pg.display.flip()
 
 def moveSquares(squares: list[Square], dir:tuple[int, int], occupied: dict[tuple[int, int]: Square]) -> None:
@@ -94,7 +94,7 @@ def moveSquares(squares: list[Square], dir:tuple[int, int], occupied: dict[tuple
             if s.getStatus():
                 occupied[(currX, currY)] = s
                 s.setIdx((currX, currY))
-                s.rect = CELL_RECTS[currY][currX]
+                s.destRect = CELL_RECTS[currY][currX].copy()
             else:
                 squares.remove(s)
             print(occupied)
@@ -118,11 +118,12 @@ def spawnSquare(squares: list[Square], occupied: dict[tuple[int, int]: Square]) 
     if len(potential) == 0:
         return
     idx = random.choice(potential)
-    squares.append(Square(random.choice([2,2,2,2,2,2,4]), idx, CELL_RECTS[idx[1]][idx[0]]))
+    squares.append(Square(random.choice([2,2,2,2,2,2,4]), idx, CELL_RECTS[idx[1]][idx[0]].copy()))
     occupied[idx] = squares[-1]
 
-def renderSquare(smallWriter: pg.font, largeWriter: pg.font, los: list[Square]) -> None:
+def renderSquare(smallWriter: pg.font, largeWriter: pg.font, los: list[Square], frameCount: int) -> None:
     for s in los:
+        s.update(frameCount)
         squareVal = s.getNum()
         textSurf = None
         if squareVal <= 4:
@@ -132,9 +133,9 @@ def renderSquare(smallWriter: pg.font, largeWriter: pg.font, los: list[Square]) 
         else:
             textSurf = largeWriter.render(str(squareVal), True, SQUARE_TXT_COLOR_LARGE_NUM)
 
-        textRect = textSurf.get_rect(center=s.rect.center)
+        textRect = textSurf.get_rect(center=s.currRect.center)
         SQUARE_SURFACE.fill(SQUARE_COLOR.get(squareVal))
-        SCREEN.blit(SQUARE_SURFACE, s.rect)
+        SCREEN.blit(SQUARE_SURFACE, s.currRect)
         SCREEN.blit(textSurf, textRect)
         # print('aa')
          

@@ -1,5 +1,6 @@
 import pygame as pg
 class  Square:
+    SPEED = 60
     def __init__(self,num: int, idx: tuple[int, int], rect: pg.rect.Rect) -> None:
         """Create a square with specified attributes
         num -- the number it currently holds
@@ -8,7 +9,8 @@ class  Square:
         """
         self.num = num
         self.idx = idx
-        self.rect = rect
+        self.currRect = rect
+        self.destRect = self.currRect
 
         self.lastDir = (0,0)
         self.status = True
@@ -37,3 +39,18 @@ class  Square:
     
     def getStatus(self) -> bool:
         return self.status
+
+    def update(self, framceCount: int) -> None:
+        if self.currRect.center == self.destRect.center:
+            return
+        
+        if self.currRect.centerx + self.SPEED <= self.destRect.centerx:
+            self.currRect.move_ip(self.SPEED, 0)
+        elif self.currRect.centerx - self.SPEED >= self.destRect.centerx:
+            self.currRect.move_ip(-self.SPEED, 0)
+        elif self.currRect.centery + self.SPEED <= self.destRect.centery:
+            self.currRect.move_ip(0, self.SPEED)
+        elif self.currRect.centery - self.SPEED >= self.destRect.centery:
+            self.currRect.move_ip(0, -self.SPEED)
+        else:
+            self.currRect = self.destRect
