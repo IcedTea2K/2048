@@ -14,6 +14,7 @@ class  Square:
 
         self.lastDir = (0,0)
         self.status = True
+        self.isMoving = False
     
     def double(self) -> None:
         self.num *= 2
@@ -24,7 +25,9 @@ class  Square:
     
     def setIdx(self, idx: tuple[int, int]) -> None:
         """Set the square to a new index in the list"""
-        self.idx = idx
+        if self.idx != idx:
+            self.isMoving = True
+            self.idx = idx
 
     def getNum(self) -> int:
         """Get the number of square"""
@@ -40,10 +43,11 @@ class  Square:
     def getStatus(self) -> bool:
         return self.status
 
-    def update(self, framceCount: int) -> None:
+    def update(self, frameCount: int) -> None:
         if self.currRect.center == self.destRect.center:
+            self.isMoving = False
             return
-        
+        self.isMoving = True 
         if self.currRect.centerx + self.SPEED <= self.destRect.centerx:
             self.currRect.move_ip(self.SPEED, 0)
         elif self.currRect.centerx - self.SPEED >= self.destRect.centerx:

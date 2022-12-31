@@ -1,1 +1,1 @@
-occupied
+CELL_RECTS

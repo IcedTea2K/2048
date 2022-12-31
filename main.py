@@ -63,7 +63,8 @@ def main():
         SCREEN.fill(BGCOLOR) # reset screen
         pg.draw.rect(SCREEN, GRID_BGCOLOR, GRID_RECT) # draw grid background
         drawCells(CELL_SURFACE, CELL_RECTS) # draw each cells of grid
-        renderSquare(smallWriter, largeWrite, allSquares, frameCount)
+        updateSquares(allSquares, frameCount)
+        renderSquares(smallWriter, largeWrite, allSquares)
         pg.display.flip()
 
 def moveSquares(squares: list[Square], dir:tuple[int, int], occupied: dict[tuple[int, int]: Square]) -> None:
@@ -96,8 +97,8 @@ def moveSquares(squares: list[Square], dir:tuple[int, int], occupied: dict[tuple
                 s.setIdx((currX, currY))
                 s.destRect = CELL_RECTS[currY][currX].copy()
             else:
-                squares.remove(s)
-            print(occupied)
+                s.destRect = CELL_RECTS[currY + dir[1]][currX + dir[0]].copy()
+            # print(occupied)
     if hasMoved:
         spawnSquare(squares, occupied) 
 
@@ -105,7 +106,6 @@ def combineSquare(squareOne: Square, squareTwo: Square) -> bool:
     if squareOne.getNum() == squareTwo.getNum():
         squareTwo.double()
         squareOne.disable()
-        print('aa')
         return True
     return False
 
@@ -121,9 +121,14 @@ def spawnSquare(squares: list[Square], occupied: dict[tuple[int, int]: Square]) 
     squares.append(Square(random.choice([2,2,2,2,2,2,4]), idx, CELL_RECTS[idx[1]][idx[0]].copy()))
     occupied[idx] = squares[-1]
 
-def renderSquare(smallWriter: pg.font, largeWriter: pg.font, los: list[Square], frameCount: int) -> None:
+def updateSquares(los: list[Square], frameCount: int) -> None:
     for s in los:
         s.update(frameCount)
+        if s.getStatus() == False and s.isMoving == False:
+            los.remove(s)
+
+def renderSquares(smallWriter: pg.font, largeWriter: pg.font, los: list[Square]) -> None:
+    for s in los:
         squareVal = s.getNum()
         textSurf = None
         if squareVal <= 4:
@@ -137,7 +142,6 @@ def renderSquare(smallWriter: pg.font, largeWriter: pg.font, los: list[Square], 
         SQUARE_SURFACE.fill(SQUARE_COLOR.get(squareVal))
         SCREEN.blit(SQUARE_SURFACE, s.currRect)
         SCREEN.blit(textSurf, textRect)
-        # print('aa')
          
 
 def drawCells(surface:pg.Surface, rects: list[list[pg.Rect]]) -> None:
