@@ -1,6 +1,6 @@
 import pygame as pg
 class  Square:
-    SPEED = 60
+    SPEED = 40
     def __init__(self,num: int, idx: tuple[int, int], rect: pg.rect.Rect) -> None:
         """Create a square with specified attributes
         num -- the number it currently holds
