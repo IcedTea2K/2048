@@ -38,14 +38,14 @@ def main():
     pg.font.init()
     smallWriter = pg.font.Font(None, SQUARE_TXT_SIZE_SMALL_NUM)
     largeWrite = pg.font.Font(None, SQUARE_TXT_SIZE_LARGE_NUM)
-    # allSquares = [Square(2048, (0,0), CELL_RECTS[0][0]), Square(4, (1,0), CELL_RECTS[0][1]),\
-    #     Square(4, (0,1), CELL_RECTS[1][0]), Square(4, (1,1), CELL_RECTS[1][1]), Square(4, (2,0), CELL_RECTS[0][2])] # list of all the squares in the game
-    # occupiedCells = {(0,0): allSquares[0], (1,0): allSquares[1],\
-    #     (0,1): allSquares[2], (1,1):allSquares[3], (2,0):allSquares[4]}
-    allSquares = []
-    occupiedCells = {}
-    spawnSquare(allSquares, occupiedCells) 
-    spawnSquare(allSquares, occupiedCells)  
+    allSquares = [Square(8, (0,0), CELL_RECTS[0][0].copy()), Square(8, (1,0), CELL_RECTS[0][1].copy()),\
+        Square(4, (0,1), CELL_RECTS[1][0].copy()), Square(2, (1,1), CELL_RECTS[1][1].copy()), Square(8, (2,0), CELL_RECTS[0][2].copy())] # list of all the squares in the game
+    occupiedCells = {(0,0): allSquares[0], (1,0): allSquares[1],\
+        (0,1): allSquares[2], (1,1):allSquares[3], (2,0):allSquares[4]}
+    # allSquares = []
+    # occupiedCells = {}
+    # spawnSquare(allSquares, occupiedCells) 
+    # spawnSquare(allSquares, occupiedCells)  
     while True:
         frameCount = int(((pg.time.get_ticks() / 1000) * 60)%60)
         for event in pg.event.get():
@@ -105,8 +105,10 @@ def moveSquares(squares: list[Square], dir:tuple[int, int], occupied: dict[tuple
         spawnSquare(squares, occupied) 
 
 def combineSquare(squareOne: Square, squareTwo: Square) -> bool:
-    if squareOne.getNum() == squareTwo.getNum():
+    if squareOne.getNum() == squareTwo.getNum() and squareTwo.isCombining is False:
         squareOne.disable()
+        squareTwo.double()
+        squareTwo.isCombining = True
         squareOne.linkedSquare = squareTwo
         return True
     return False
@@ -127,12 +129,12 @@ def updateSquares(los: list[Square], frameCount: int) -> None:
     for s in los:
         s.update(frameCount)
         if s.getStatus() == False and s.isMoving == False:
-            s.linkedSquare.double()
+            s.linkedSquare.isCombining = False
             los.remove(s)
 
 def renderSquares(smallWriter: pg.font, largeWriter: pg.font, los: list[Square]) -> None:
     for s in los:
-        squareVal = s.getNum()
+        squareVal = s.getNum() if s.isCombining is False else int(s.getNum()/2)
         textSurf = None
         if squareVal <= 4:
             textSurf = smallWriter.render(str(squareVal), True, SQUARE_TXT_COLOR_SMALL_NUM)
