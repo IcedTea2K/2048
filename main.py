@@ -95,10 +95,10 @@ def drawScoreBox(currScore: int, highScore: int) -> None:
     highScoreTxtSurf = writer.render(str(highScore), True, (255, 255, 255))
     highScoreTxtRect = highScoreTxtSurf.get_rect(center=HIGH_SCORE_BOX_RECT.center)
 
-    currScoreLableSurf = writer.render('Score', True, (187, 173, 160))
+    currScoreLableSurf = writer.render('Score', True, (119, 110, 101))
     currScoreLableRect = currScoreLableSurf.get_rect(center=(currScoreTxtRect.centerx, currScoreTxtRect.centery - 30))
 
-    highScoreLableSurf = writer.render('Best', True, (187, 173, 160))
+    highScoreLableSurf = writer.render('Best', True, (119, 110, 101))
     highScoreLableRect = highScoreLableSurf.get_rect(center=(highScoreTxtRect.centerx, highScoreTxtRect.centery - 30))
 
     SCREEN.blit(SCORE_BOX_SURF, HIGH_SCORE_BOX_RECT)
