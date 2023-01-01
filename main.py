@@ -40,6 +40,17 @@ HIGH_SCORE_BOX_RECT = pg.Rect((430, 70), SCORE_BOX_SIZE)
 CURR_SCORE_BOX_RECT = pg.Rect((430 - SCORE_BOX_SIZE[0] - 4, 70), SCORE_BOX_SIZE)
 SCORE_TXT_SIZE = 30
 
+NEW_GAME_SIZE = 120, 40
+NEW_GAME_SURF = pg.Surface(NEW_GAME_SIZE)
+NEW_GAME_SURF.fill((140, 123, 104))
+NEW_GAME_RECT = pg.Rect((427-60, 140), NEW_GAME_SIZE)
+NEW_GAME_TXT_SIZE = 30
+
+GAMEOVER_BGCOLOR = 156, 143, 132, 150
+GAMEOVER_SURF = pg.Surface(GRID_SIZE, pg.SRCALPHA)
+GAMEOVER_SURF.fill(GAMEOVER_BGCOLOR)
+GAMEOVER_TXT_SIZE = 100
+
 def main():
     pg.init()
     pg.font.init()
@@ -76,16 +87,45 @@ def main():
                     hasMoved = moveSquares(allSquares, (-1, 0), occupiedCells)
                 elif event.key == pg.K_DOWN:
                     hasMoved = moveSquares(allSquares, (0, 1), occupiedCells)
+            elif event.type == pg.MOUSEBUTTONDOWN:
+                if NEW_GAME_RECT.collidepoint(pg.mouse.get_pos()):
+                    allSquares = []
+                    occupiedCells = {}
+                    spawnSquare(allSquares, occupiedCells) 
+                    spawnSquare(allSquares, occupiedCells)
+                    currScore = 0
         SCREEN.fill(BGCOLOR) # reset screen
         # Draw background
         pg.draw.rect(SCREEN, GRID_BGCOLOR, GRID_RECT) # draw grid background
         drawCells(CELL_SURFACE, CELL_RECTS) # draw each cells of grid
         hasMoved = updateSquares(allSquares, occupiedCells, frameCount, hasMoved)
         drawScoreBox(currScore, highScore)
-
+        drawButton()
+        
         # draw squares
         renderSquares(smallWriter, largeWrite, allSquares)
+        if len(occupiedCells) == 16 and isGameOver(occupiedCells):
+            gameOver()
         pg.display.flip()
+
+def isGameOver(occupied: dict[tuple[int, int]: Square]) -> bool:
+    for y in range(4):
+        for x in range(4):
+            if (occupied.get(((x+1), y)) is not None and \
+                occupied[(x+1, y)].getNum() == occupied[(x, y)].getNum()) or \
+                    (occupied.get((x, y+1)) is not None and \
+                        occupied[(x, y+1)].getNum() == occupied[(x, y)].getNum()):
+                return False
+    return True
+
+def gameOver() -> None:
+    writer = pg.font.Font(None, GAMEOVER_TXT_SIZE)
+    gameOverTxtSurf = writer.render('Game Over', True, (255, 255, 255))
+    gameOverTxtRect = gameOverTxtSurf.get_rect(center=GRID_RECT.center)
+
+    
+    SCREEN.blit(GAMEOVER_SURF, GRID_RECT)
+    SCREEN.blit(gameOverTxtSurf, gameOverTxtRect)
 
 def drawScoreBox(currScore: int, highScore: int) -> None:
     writer = pg.font.Font(None, SCORE_TXT_SIZE)
@@ -110,6 +150,13 @@ def drawScoreBox(currScore: int, highScore: int) -> None:
     SCREEN.blit(currScoreLableSurf, currScoreLableRect)
     SCREEN.blit(highScoreLableSurf, highScoreLableRect)
 
+def drawButton():
+    writer = pg.font.Font(None, NEW_GAME_TXT_SIZE)
+    newGameTxtSurf = writer.render('New Game', True, (255, 255, 255))
+    newGameTxtRect = newGameTxtSurf.get_rect(center=NEW_GAME_RECT.center)
+
+    SCREEN.blit(NEW_GAME_SURF, NEW_GAME_RECT)
+    SCREEN.blit(newGameTxtSurf, newGameTxtRect)
 
 def moveSquares(squares: list[Square], dir:tuple[int, int], occupied: dict[tuple[int, int]: Square]) -> bool:
     container = [[] for i in range(4)]
