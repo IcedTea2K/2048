@@ -101,7 +101,7 @@ def moveSquares(squares: list[Square], dir:tuple[int, int], occupied: dict[tuple
                 s.destRect = CELL_RECTS[currY][currX].copy()
             else:
                 s.destRect = CELL_RECTS[currY + dir[1]][currX + dir[0]].copy()
-            print(occupied)
+            # print(occupied)
     return hasMoved
 
 def combineSquare(squareOne: Square, squareTwo: Square) -> bool:
@@ -131,6 +131,7 @@ def updateSquares(los: list[Square], occupied: dict[tuple[int, int]: Square], fr
         s.update(frameCount)
         if s.getStatus() == False and s.isMoving == False:
             s.linkedSquare.isCombining = False
+            s.linkedSquare.isInflating = True
             los.remove(s)
         elif s.isMoving:
             noneIsMoving = False
@@ -153,7 +154,7 @@ def renderSquares(smallWriter: pg.font, largeWriter: pg.font, los: list[Square])
 
         textRect = textSurf.get_rect(center=s.currRect.center)
         SQUARE_SURFACE.fill(SQUARE_COLOR.get(squareVal))
-        SCREEN.blit(SQUARE_SURFACE, s.currRect)
+        SCREEN.blit(pg.transform.scale(SQUARE_SURFACE, s.currRect.size), s.currRect)
         SCREEN.blit(textSurf, textRect)
          
 

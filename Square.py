@@ -1,6 +1,9 @@
 import pygame as pg
 class  Square:
-    SPEED = 70
+    SPEED = 80
+    INFLATION_RATE = 4
+    MAX_SIZE = (120, 120)
+    ORG_SIZE = (106, 106)
     def __init__(self,num: int, idx: tuple[int, int], rect: pg.rect.Rect) -> None:
         """Create a square with specified attributes
         num -- the number it currently holds
@@ -11,12 +14,13 @@ class  Square:
         self.idx = idx
         self.currRect = rect
         self.destRect = self.currRect
-
+        
         self.lastDir = (0,0)
         self.status = True
         self.isMoving = False
         self.isCombining = False
         self.linkedSquare = None
+        self.isInflating = False
     
     def double(self) -> None:
         self.num *= 2
@@ -45,9 +49,24 @@ class  Square:
     def getStatus(self) -> bool:
         return self.status
 
+    def inflate(self) -> None:
+        if self.isInflating:
+            if self.currRect.size[0] + self.INFLATION_RATE < self.MAX_SIZE[0]:
+                self.currRect = self.currRect.inflate(self.INFLATION_RATE, self.INFLATION_RATE)
+            else:
+                self.currRect.size = self.MAX_SIZE
+                self.isInflating = False
+        else:
+            if self.currRect.size[0] - self.INFLATION_RATE > self.ORG_SIZE[0]:
+                self.currRect.inflate_ip(-self.INFLATION_RATE, -self.INFLATION_RATE) 
+            else:
+                self.currRect.size = self.ORG_SIZE
+
     def update(self, frameCount: int) -> None:
         if self.currRect.center == self.destRect.center:
             self.isMoving = False
+            self.inflate()
+            
             return
         self.isMoving = True 
         if self.currRect.centerx + self.SPEED <= self.destRect.centerx:
