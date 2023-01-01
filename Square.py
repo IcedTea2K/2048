@@ -2,7 +2,7 @@ import pygame as pg
 class  Square:
     SPEED = 80
     INFLATION_RATE = 4
-    MAX_SIZE = (120, 120)
+    MAX_SIZE = (130, 130)
     ORG_SIZE = (106, 106)
     def __init__(self,num: int, idx: tuple[int, int], rect: pg.rect.Rect) -> None:
         """Create a square with specified attributes
@@ -15,12 +15,11 @@ class  Square:
         self.currRect = rect
         self.destRect = self.currRect
         
-        self.lastDir = (0,0)
         self.status = True
         self.isMoving = False
         self.isCombining = False
         self.linkedSquare = None
-        self.isInflating = False
+        self.isInflating = True
     
     def double(self) -> None:
         self.num *= 2
