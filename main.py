@@ -51,6 +51,8 @@ GAMEOVER_SURF = pg.Surface(GRID_SIZE, pg.SRCALPHA)
 GAMEOVER_SURF.fill(GAMEOVER_BGCOLOR)
 GAMEOVER_TXT_SIZE = 100
 
+TITLE_TXT_SIZE = 100
+
 def main():
     pg.init()
     pg.font.init()
@@ -101,12 +103,20 @@ def main():
         hasMoved = updateSquares(allSquares, occupiedCells, frameCount, hasMoved)
         drawScoreBox(currScore, highScore)
         drawButton()
+        drawTitle()
+        
         
         # draw squares
         renderSquares(smallWriter, largerWriter, allSquares)
         if len(occupiedCells) == 16 and isGameOver(occupiedCells):
             gameOver()
         pg.display.flip()
+
+def drawTitle() -> None:
+    titleWriter = pg.font.Font(None, TITLE_TXT_SIZE)
+    titleSurf = titleWriter.render('2048', True,(117, 110, 102))
+    titleRect = titleSurf.get_rect(center=(150, 120))
+    SCREEN.blit(titleSurf, titleRect)
 
 def isGameOver(occupied: dict[tuple[int, int]: Square]) -> bool:
     for y in range(4):
