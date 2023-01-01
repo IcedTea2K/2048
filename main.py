@@ -55,7 +55,7 @@ def main():
     pg.init()
     pg.font.init()
     smallWriter = pg.font.Font(None, SQUARE_TXT_SIZE_SMALL_NUM)
-    largeWrite = pg.font.Font(None, SQUARE_TXT_SIZE_LARGE_NUM)
+    largerWriter = pg.font.Font(None, SQUARE_TXT_SIZE_LARGE_NUM)
     allSquares = []
     occupiedCells = {}
     spawnSquare(allSquares, occupiedCells) 
@@ -103,7 +103,7 @@ def main():
         drawButton()
         
         # draw squares
-        renderSquares(smallWriter, largeWrite, allSquares)
+        renderSquares(smallWriter, largerWriter, allSquares)
         if len(occupiedCells) == 16 and isGameOver(occupiedCells):
             gameOver()
         pg.display.flip()

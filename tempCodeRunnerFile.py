@@ -1,1 +1,1 @@
-currScoreLableRect
+largeWrite
