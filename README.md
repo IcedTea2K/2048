@@ -24,4 +24,4 @@ For those interested, here's a few things that help recreate the game:
 
 ## TODO:
 - ~~Add more comprehensive README~~
-- Clean up the code
+- ~~Clean up the code~~
