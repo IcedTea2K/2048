@@ -38,14 +38,15 @@ def main():
     pg.font.init()
     smallWriter = pg.font.Font(None, SQUARE_TXT_SIZE_SMALL_NUM)
     largeWrite = pg.font.Font(None, SQUARE_TXT_SIZE_LARGE_NUM)
-    allSquares = [Square(8, (0,0), CELL_RECTS[0][0].copy()), Square(8, (1,0), CELL_RECTS[0][1].copy()),\
-        Square(4, (0,1), CELL_RECTS[1][0].copy()), Square(2, (1,1), CELL_RECTS[1][1].copy()), Square(8, (2,0), CELL_RECTS[0][2].copy())] # list of all the squares in the game
-    occupiedCells = {(0,0): allSquares[0], (1,0): allSquares[1],\
-        (0,1): allSquares[2], (1,1):allSquares[3], (2,0):allSquares[4]}
-    # allSquares = []
-    # occupiedCells = {}
-    # spawnSquare(allSquares, occupiedCells) 
-    # spawnSquare(allSquares, occupiedCells)  
+    # allSquares = [Square(8, (0,0), CELL_RECTS[0][0].copy()), Square(8, (1,0), CELL_RECTS[0][1].copy()),\
+    #     Square(4, (0,1), CELL_RECTS[1][0].copy()), Square(2, (1,1), CELL_RECTS[1][1].copy()), Square(8, (2,0), CELL_RECTS[0][2].copy())] # list of all the squares in the game
+    # occupiedCells = {(0,0): allSquares[0], (1,0): allSquares[1],\
+    #     (0,1): allSquares[2], (1,1):allSquares[3], (2,0):allSquares[4]}
+    allSquares = []
+    occupiedCells = {}
+    spawnSquare(allSquares, occupiedCells) 
+    spawnSquare(allSquares, occupiedCells)  
+    hasMoved = False
     while True:
         frameCount = int(((pg.time.get_ticks() / 1000) * 60)%60)
         for event in pg.event.get():
@@ -53,21 +54,21 @@ def main():
                 sys.exit()
             elif event.type == pg.KEYUP:
                 if event.key == pg.K_UP:
-                    moveSquares(allSquares, (0,-1), occupiedCells)
+                    hasMoved = moveSquares(allSquares, (0,-1), occupiedCells)
                 elif event.key == pg.K_RIGHT:
-                    moveSquares(allSquares, (1, 0), occupiedCells)
+                    hasMoved = moveSquares(allSquares, (1, 0), occupiedCells)
                 elif event.key == pg.K_LEFT:
-                    moveSquares(allSquares, (-1, 0), occupiedCells)
+                    hasMoved = moveSquares(allSquares, (-1, 0), occupiedCells)
                 elif event.key == pg.K_DOWN:
-                    moveSquares(allSquares, (0, 1), occupiedCells)
+                    hasMoved = moveSquares(allSquares, (0, 1), occupiedCells)
         SCREEN.fill(BGCOLOR) # reset screen
         pg.draw.rect(SCREEN, GRID_BGCOLOR, GRID_RECT) # draw grid background
         drawCells(CELL_SURFACE, CELL_RECTS) # draw each cells of grid
-        updateSquares(allSquares, frameCount)
+        hasMoved = updateSquares(allSquares, occupiedCells, frameCount, hasMoved)
         renderSquares(smallWriter, largeWrite, allSquares)
         pg.display.flip()
 
-def moveSquares(squares: list[Square], dir:tuple[int, int], occupied: dict[tuple[int, int]: Square]) -> None:
+def moveSquares(squares: list[Square], dir:tuple[int, int], occupied: dict[tuple[int, int]: Square]) -> bool:
     container = [[] for i in range(4)]
     if dir == (1,0) or dir == (-1,0): # horizontally
         for s in squares:
@@ -101,8 +102,7 @@ def moveSquares(squares: list[Square], dir:tuple[int, int], occupied: dict[tuple
             else:
                 s.destRect = CELL_RECTS[currY + dir[1]][currX + dir[0]].copy()
             print(occupied)
-    if hasMoved:
-        spawnSquare(squares, occupied) 
+    return hasMoved
 
 def combineSquare(squareOne: Square, squareTwo: Square) -> bool:
     if squareOne.getNum() == squareTwo.getNum() and squareTwo.isCombining is False:
@@ -125,12 +125,20 @@ def spawnSquare(squares: list[Square], occupied: dict[tuple[int, int]: Square]) 
     squares.append(Square(random.choice([2,2,2,2,2,2,4]), idx, CELL_RECTS[idx[1]][idx[0]].copy()))
     occupied[idx] = squares[-1]
 
-def updateSquares(los: list[Square], frameCount: int) -> None:
+def updateSquares(los: list[Square], occupied: dict[tuple[int, int]: Square], frameCount: int, hasMoved: bool) -> bool:
+    noneIsMoving = True
     for s in los:
         s.update(frameCount)
         if s.getStatus() == False and s.isMoving == False:
             s.linkedSquare.isCombining = False
             los.remove(s)
+        elif s.isMoving:
+            noneIsMoving = False
+    if noneIsMoving and hasMoved:
+        spawnSquare(los, occupied)
+        return False
+    return hasMoved
+    
 
 def renderSquares(smallWriter: pg.font, largeWriter: pg.font, los: list[Square]) -> None:
     for s in los:
