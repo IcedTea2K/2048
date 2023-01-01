@@ -61,7 +61,7 @@ class  Square:
             else:
                 self.currRect.size = self.ORG_SIZE
 
-    def update(self, frameCount: int) -> None:
+    def update(self) -> None:
         if self.currRect.center == self.destRect.center:
             self.isMoving = False
             self.inflate()
