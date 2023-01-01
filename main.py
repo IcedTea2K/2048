@@ -33,6 +33,13 @@ SQUARE_TXT_SIZE_LARGE_NUM = 50
 SQUARE_TXT_COLOR_SMALL_NUM = (119, 110, 101)
 SQUARE_TXT_COLOR_LARGE_NUM = (255, 255, 255)
 
+SCORE_BOX_SIZE = 100, 40
+SCORE_BOX_SURF = pg.Surface(SCORE_BOX_SIZE)
+SCORE_BOX_SURF.fill((185, 173, 161))
+HIGH_SCORE_BOX_RECT = pg.Rect((430, 70), SCORE_BOX_SIZE)
+CURR_SCORE_BOX_RECT = pg.Rect((430 - SCORE_BOX_SIZE[0] - 4, 70), SCORE_BOX_SIZE)
+SCORE_TXT_SIZE = 30
+
 def main():
     pg.init()
     pg.font.init()
@@ -74,10 +81,35 @@ def main():
         pg.draw.rect(SCREEN, GRID_BGCOLOR, GRID_RECT) # draw grid background
         drawCells(CELL_SURFACE, CELL_RECTS) # draw each cells of grid
         hasMoved = updateSquares(allSquares, occupiedCells, frameCount, hasMoved)
+        drawScoreBox(currScore, highScore)
 
         # draw squares
         renderSquares(smallWriter, largeWrite, allSquares)
         pg.display.flip()
+
+def drawScoreBox(currScore: int, highScore: int) -> None:
+    writer = pg.font.Font(None, SCORE_TXT_SIZE)
+    currScoreTxtSurf = writer.render(str(currScore), True, (255, 255, 255))
+    currScoreTxtRect = currScoreTxtSurf.get_rect(center=CURR_SCORE_BOX_RECT.center)
+
+    highScoreTxtSurf = writer.render(str(highScore), True, (255, 255, 255))
+    highScoreTxtRect = highScoreTxtSurf.get_rect(center=HIGH_SCORE_BOX_RECT.center)
+
+    currScoreLableSurf = writer.render('Score', True, (187, 173, 160))
+    currScoreLableRect = currScoreLableSurf.get_rect(center=(currScoreTxtRect.centerx, currScoreTxtRect.centery - 30))
+
+    highScoreLableSurf = writer.render('Best', True, (187, 173, 160))
+    highScoreLableRect = highScoreLableSurf.get_rect(center=(highScoreTxtRect.centerx, highScoreTxtRect.centery - 30))
+
+    SCREEN.blit(SCORE_BOX_SURF, HIGH_SCORE_BOX_RECT)
+    SCREEN.blit(highScoreTxtSurf, highScoreTxtRect)
+
+    SCREEN.blit(SCORE_BOX_SURF, CURR_SCORE_BOX_RECT)
+    SCREEN.blit(currScoreTxtSurf, currScoreTxtRect)
+
+    SCREEN.blit(currScoreLableSurf, currScoreLableRect)
+    SCREEN.blit(highScoreLableSurf, highScoreLableRect)
+
 
 def moveSquares(squares: list[Square], dir:tuple[int, int], occupied: dict[tuple[int, int]: Square]) -> bool:
     container = [[] for i in range(4)]

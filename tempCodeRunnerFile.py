@@ -1,1 +1,1 @@
-CELL_RECTS
+currScoreLableRect
