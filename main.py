@@ -38,19 +38,27 @@ def main():
     pg.font.init()
     smallWriter = pg.font.Font(None, SQUARE_TXT_SIZE_SMALL_NUM)
     largeWrite = pg.font.Font(None, SQUARE_TXT_SIZE_LARGE_NUM)
-    # allSquares = [Square(8, (0,0), CELL_RECTS[0][0].copy()), Square(8, (1,0), CELL_RECTS[0][1].copy()),\
-    #     Square(4, (0,1), CELL_RECTS[1][0].copy()), Square(2, (1,1), CELL_RECTS[1][1].copy()), Square(8, (2,0), CELL_RECTS[0][2].copy())] # list of all the squares in the game
-    # occupiedCells = {(0,0): allSquares[0], (1,0): allSquares[1],\
-    #     (0,1): allSquares[2], (1,1):allSquares[3], (2,0):allSquares[4]}
     allSquares = []
     occupiedCells = {}
     spawnSquare(allSquares, occupiedCells) 
     spawnSquare(allSquares, occupiedCells)  
     hasMoved = False
+
+    highScore = 0
+    global currScore
+    currScore = 0
+    with open('high_score.txt', 'r') as f:
+        highScore = int(f.read())
+
     while True:
         frameCount = int(((pg.time.get_ticks() / 1000) * 60)%60)
+        if currScore > highScore:
+            highScore = currScore
+        
         for event in pg.event.get():
             if event.type == pg.QUIT:
+                with open('high_score.txt', 'w') as f:
+                    f.write(str(highScore)) 
                 sys.exit()
             elif event.type == pg.KEYUP:
                 if event.key == pg.K_UP:
@@ -62,9 +70,12 @@ def main():
                 elif event.key == pg.K_DOWN:
                     hasMoved = moveSquares(allSquares, (0, 1), occupiedCells)
         SCREEN.fill(BGCOLOR) # reset screen
+        # Draw background
         pg.draw.rect(SCREEN, GRID_BGCOLOR, GRID_RECT) # draw grid background
         drawCells(CELL_SURFACE, CELL_RECTS) # draw each cells of grid
         hasMoved = updateSquares(allSquares, occupiedCells, frameCount, hasMoved)
+
+        # draw squares
         renderSquares(smallWriter, largeWrite, allSquares)
         pg.display.flip()
 
@@ -108,6 +119,8 @@ def combineSquare(squareOne: Square, squareTwo: Square) -> bool:
     if squareOne.getNum() == squareTwo.getNum() and squareTwo.isCombining is False:
         squareOne.disable()
         squareTwo.double()
+        global currScore
+        currScore += squareTwo.getNum()
         squareTwo.isCombining = True
         squareOne.linkedSquare = squareTwo
         return True
