@@ -15,6 +15,7 @@ class  Square:
         self.lastDir = (0,0)
         self.status = True
         self.isMoving = False
+        self.linkedSquare = None
     
     def double(self) -> None:
         self.num *= 2

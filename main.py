@@ -106,8 +106,8 @@ def moveSquares(squares: list[Square], dir:tuple[int, int], occupied: dict[tuple
 
 def combineSquare(squareOne: Square, squareTwo: Square) -> bool:
     if squareOne.getNum() == squareTwo.getNum():
-        squareTwo.double()
         squareOne.disable()
+        squareOne.linkedSquare = squareTwo
         return True
     return False
 
@@ -127,6 +127,7 @@ def updateSquares(los: list[Square], frameCount: int) -> None:
     for s in los:
         s.update(frameCount)
         if s.getStatus() == False and s.isMoving == False:
+            s.linkedSquare.double()
             los.remove(s)
 
 def renderSquares(smallWriter: pg.font, largeWriter: pg.font, los: list[Square]) -> None:
