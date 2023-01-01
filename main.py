@@ -67,8 +67,14 @@ def main():
     highScore = 0
     global currScore
     currScore = 0
-    with open('high_score.txt', 'r') as f:
-        highScore = int(f.read())
+    with open('high_score.txt', 'a+') as f:
+        f.seek(0)
+        m = f.read()
+        if m != '':
+            highScore = int(m)
+        else:
+            highScore = 0
+        print(highScore)
 
     while True:
         frameCount = int(((pg.time.get_ticks() / 1000) * 60)%60)
